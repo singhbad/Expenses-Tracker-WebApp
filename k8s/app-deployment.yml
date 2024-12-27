@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: expensetracker
+  labels:
+    app: expensetracker
 spec:
   replicas: 1
   selector:
@@ -15,6 +17,7 @@ spec:
       containers:
       - name: expensetracker
         image: snehcreate/expensetracker_v3
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
@@ -24,3 +27,9 @@ spec:
           value: "jdbc:mysql://mysql:3306/expenses_tracker?allowPublicKeyRetrieval=true&useSSL=false"
         - name: SPRING_DATASOURCE_PASSWORD
           value: Test@123
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
