@@ -5,7 +5,7 @@ metadata:
   labels:
     app: expensetracker
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: expensetracker
@@ -31,5 +31,19 @@ spec:
           httpGet:
             path: /actuator/health
             port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
+          initialDelaySeconds: 60  # Increased delay to allow MySQL to be ready
+          periodSeconds: 15
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 20
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"

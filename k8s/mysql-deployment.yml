@@ -47,6 +47,19 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:  # Added startup probe
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+            - -uroot
+            - -pTest@123
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 30  # Allow up to 5 minutes for startup
       volumes:
       - name: mysql-data
         persistentVolumeClaim:
